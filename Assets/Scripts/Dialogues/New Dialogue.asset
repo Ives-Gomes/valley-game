@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86acaaad784a7d647a39ae79f9682c38, type: 3}
+  m_Name: New Dialogue
+  m_EditorClassIdentifier: 
+  actor: {fileID: 8762606712589846815, guid: 1dacd67edcd1a2f43911d82254f21a1b, type: 3}
+  speakerSprite: {fileID: 0}
+  sentence: 
+  dialogues:
+  - actorName: Player
+    profile: {fileID: 21300000, guid: eff2a35dee896f54f9d85547a3c89066, type: 3}
+    sentence:
+      portuguese: "Oi, her\xF3i! Tudo bem com voc\xEA? Me chamo Ana."
+      english: Hi
+      spanish: Hola
+  - actorName: NPC
+    profile: {fileID: 21300000, guid: b839ad1cccc8a13468b127e2bfddc419, type: 3}
+    sentence:
+      portuguese: Oi! Tudo bem?
+      english: How are you?
+      spanish: ?Tudo bien?
