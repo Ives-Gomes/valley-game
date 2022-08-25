@@ -23,7 +23,7 @@ public class DialogueControl : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float typingSpeed;
 
-    private bool isShowing;
+    public bool isShowing;
     private int index;
     private string[] sentences;
 
