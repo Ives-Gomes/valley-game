@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float runSpeed;
     private float initialSpeed;
     private bool _isRunning;
+    private bool _isCutting;
     private bool _isRolling;
 
     private Rigidbody2D rig;
@@ -23,6 +24,12 @@ public class Player : MonoBehaviour
     {
         get { return _isRunning; }
         set { _isRunning = value; }
+    }
+
+    public bool isCutting
+    {
+        get { return _isCutting; }
+        set { _isCutting = value; }
     }
 
     public bool isRolling
@@ -45,6 +52,8 @@ public class Player : MonoBehaviour
         OnRun();
 
         OnRolling();
+
+        OnCutting();
     }
 
     private void FixedUpdate()
@@ -64,6 +73,23 @@ public class Player : MonoBehaviour
     private void OnMove()
     {
         rig.MovePosition(rig.position + _direction * speed * Time.fixedDeltaTime);
+    }
+
+    private void OnCutting()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            _isCutting = true;
+
+            speed = 0;
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            _isCutting = false;
+
+            speed = initialSpeed;
+        }
     }
 
     private void OnRun()
