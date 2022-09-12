@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    private bool isPaused;
+
     [SerializeField] private float speed;
     [SerializeField] private float runSpeed;
     private float initialSpeed;
     private bool _isRunning;
     private bool _isCutting;
     private bool _isRolling;
+    private bool _isDigging;
+    private bool _isWatering;
 
     private Rigidbody2D rig;
     private Vector2 _direction;
+    private PlayerItems playerItems;
+
+    private int handlingObject;
 
     public Vector2 direction
     {
@@ -38,30 +45,136 @@ public class Player : MonoBehaviour
         set { _isRolling = value; }
     }
 
+    public bool isDigging
+    {
+        get { return _isDigging; }
+        set { _isDigging = value; }
+    }
+
+    public bool isWatering
+    {
+        get { return _isWatering; }
+        set { _isWatering = value; }
+    }
+
+    public int HandlingObject { get => handlingObject; set => handlingObject = value; }
+    public bool IsPaused { get => isPaused; set => isPaused = value; }
+
     private void Start()
     {
         rig = GetComponent<Rigidbody2D>();
+        playerItems = GetComponent<PlayerItems>();
 
         initialSpeed = speed;
     }
 
     private void Update()
     {
-        onInput();
+        if (!isPaused)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                HandlingObject = 0;
+            }
 
-        OnRun();
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                HandlingObject = 1;
+            }
 
-        OnRolling();
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                HandlingObject = 2;
+            }
 
-        OnCutting();
+            onInput();
+
+            OnRun();
+
+            OnRolling();
+
+            OnCutting();
+
+            OnDig();
+
+            OnWatering();
+        }
     }
 
     private void FixedUpdate()
     {
-        OnMove();
+        if (!isPaused)
+        {
+            OnMove();
+        }
     }
 
     #region Movement
+    private void OnWatering()
+    {
+        if (HandlingObject == 2)
+        {
+            if (Input.GetMouseButtonDown(0) && playerItems.CurrentWater > 0)
+            {
+                _isWatering = true;
+
+                speed = 0;
+            }
+
+            if (Input.GetMouseButtonUp(0) || playerItems.CurrentWater < 0)
+            {
+                _isWatering = false;
+
+                speed = initialSpeed;
+            }
+
+            if (_isWatering)
+            {
+                playerItems.CurrentWater -= 0.01f;
+            }
+        }
+    }
+
+    private void OnDig()
+    {
+        if (HandlingObject == 1)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                _isDigging = true;
+
+                speed = 0;
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                _isDigging = false;
+
+                speed = initialSpeed;
+            }
+        }
+    }
+
+    private void OnCutting()
+    {
+        if (HandlingObject == 0)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                _isCutting = true;
+
+                speed = 0;
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                _isCutting = false;
+
+                speed = initialSpeed;
+            }
+        }
+    }
+
     private void onInput()
     {
         float x = Input.GetAxisRaw("Horizontal");
@@ -73,23 +186,6 @@ public class Player : MonoBehaviour
     private void OnMove()
     {
         rig.MovePosition(rig.position + _direction * speed * Time.fixedDeltaTime);
-    }
-
-    private void OnCutting()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            _isCutting = true;
-
-            speed = 0;
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            _isCutting = false;
-
-            speed = initialSpeed;
-        }
     }
 
     private void OnRun()
