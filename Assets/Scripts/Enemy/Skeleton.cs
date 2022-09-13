@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class Skeleton : MonoBehaviour
 {
     [Header("Stats")]
+    [SerializeField] private float radius;
+    [SerializeField] private LayerMask layer;
     [SerializeField] private float currentHealth;
     [SerializeField] private float totalHealth;
     [SerializeField] private Image healthBar;
@@ -17,6 +19,7 @@ public class Skeleton : MonoBehaviour
     [SerializeField] private AnimationControl animControl;
 
     private Player player;
+    private bool detectPlayer;
 
     public float CurrentHealth { get => currentHealth; set => currentHealth = value; }
     public Image HealthBar { get => healthBar; set => healthBar = value; }
@@ -35,8 +38,10 @@ public class Skeleton : MonoBehaviour
 
     private void Update()
     {
-        if (!isDead)
+        if (!isDead && detectPlayer)
         {
+            agent.isStopped = false;
+
             agent.SetDestination(player.transform.position);
 
             if (Vector2.Distance(transform.position, player.transform.position) <= agent.stoppingDistance)
@@ -59,5 +64,33 @@ public class Skeleton : MonoBehaviour
                 transform.eulerAngles = new Vector2(0, 180);
             }
         }
+    }
+
+    private void FixedUpdate()
+    {
+        DetectPalyer();
+    }
+
+    public void DetectPalyer()
+    {
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, radius, layer);
+
+        if (hit != null)
+        {
+            detectPlayer = true;
+        }
+        else
+        {
+            detectPlayer = false;
+
+            animControl.PlayAnim(0);
+
+            agent.isStopped = true;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(transform.position, radius);
     }
 }
